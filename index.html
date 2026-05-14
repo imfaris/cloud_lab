@@ -2,7 +2,45 @@
 <html>
 
 <head>
-    <title>Student System</title>
+    <title>Student Course Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        input {
+            margin: 4px;
+            padding: 6px;
+            width: 180px;
+        }
+
+        button {
+            margin: 4px;
+            padding: 6px 12px;
+            cursor: pointer;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        .del-btn {
+            color: red;
+            background: none;
+            border: 1px solid red;
+            border-radius: 4px;
+        }
+
+        .edit-btn {
+            color: blue;
+            background: none;
+            border: 1px solid blue;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 
 <body>
@@ -15,24 +53,43 @@
     <ul id="list"></ul>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script>
-        const supabase = supabase.createClient(
-            "YOUR_URL",
-            "YOUR_ANON_KEY"
+        const { createClient } = supabase;
+        const client = createClient(
+            "https://jlsfllqpuzgyqekpoaqf.supabase.co",
+            "sb_publishable__ZtrLIuhjmoUYwI6xREv3A_q3U550-Q"
         );
         async function addStudent() {
             const name = document.getElementById("name").value;
             const email = document.getElementById("email").value;
             const course = document.getElementById("course").value;
-            await supabase.from("students").insert([{ name, email, course }]);
+            if (!name || !email || !course) return alert("Fill all fields");
+            await client.from("students").insert([{ name, email, course }]);
+            document.getElementById("name").value = "";
+            document.getElementById("email").value = "";
+            document.getElementById("course").value = "";
+            loadStudents();
+        }
+        async function deleteStudent(id) {
+            await client.from("students").delete().eq("id", id);
+            loadStudents();
+        }
+        async function updateStudent(id, name, email, course) {
+            const newName = prompt("New name:", name);
+            const newEmail = prompt("New email:", email);
+            const newCourse = prompt("New course:", course);
+            if (!newName || !newEmail || !newCourse) return;
+            await client.from("students").update({ name: newName, email: newEmail, course: newCourse }).eq("id", id);
             loadStudents();
         }
         async function loadStudents() {
-            const { data } = await supabase.from("students").select("*");
+            const { data } = await client.from("students").select("*");
             const list = document.getElementById("list");
             list.innerHTML = "";
             data.forEach(s => {
                 const li = document.createElement("li");
-                li.innerText = s.name + " - " + s.course;
+                li.innerHTML = `<b>${s.name}</b> (${s.email}) - ${s.course}
+                    <button class="edit-btn" onclick="updateStudent(${s.id}, '${s.name}', '${s.email}', '${s.course}')">Edit</button>
+                    <button class="del-btn" onclick="deleteStudent(${s.id})">Delete</button>`;
                 list.appendChild(li);
             });
         }
