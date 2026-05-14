@@ -363,12 +363,15 @@
 
         <!-- Student list -->
         <div class="card list-card">
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
+            <div
+                style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
                 <div class="label" id="list-label" style="margin:0;">Student List</div>
                 <div id="pagination" style="display:none; gap:6px; align-items:center; padding-right:6px;">
                     <button onclick="changePage(-1)" id="btn-prev" class="btn-cancel"
                         style="padding:3px 8px; font-size:0.7rem; width:50px;">Prev</button>
-                    <span id="page-info" style="font-size:0.7rem; color:#a1a1aa; font-weight:500; width:50px; text-align:center;">Page 1</span>
+                    <span id="page-info"
+                        style="font-size:0.7rem; color:#a1a1aa; font-weight:500; width:50px; text-align:center;">Page
+                        1</span>
                     <button onclick="changePage(1)" id="btn-next" class="btn-cancel"
                         style="padding:3px 8px; font-size:0.7rem; width:50px;">Next</button>
                 </div>
@@ -384,25 +387,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
     <script>
-        /*
-         * Step 1: Connect to Supabase (our cloud database)
-         * Step 2: Define the app state (the data we keep track of)
-         * Step 3: Small helper functions (toast, counting, etc.)
-         * Step 4: CRUD functions (Create, Read, Update, Delete)
-         * Step 5: UI toggle functions (switching between view/edit mode)
-         * Step 6: Rendering (how we display students on the page)
-         * Step 7: Start the app (fetch students from DB)
-         *
-         * Everything starts at Step 7 (bottom of the file).
-         * loadStudents() loads students from the database,
-         * then renderPage() draws them on screen.
-         * After that, user actions call the CRUD functions.
-         */
-
-
-        // ==========================================
-        // STEP 1: Connect to Supabase
-        // ==========================================
         // we use supabase as our cloud database
         // createClient takes the project URL and the public API key
         const db = supabase.createClient(
@@ -410,19 +394,10 @@
             "sb_publishable__ZtrLIuhjmoUYwI6xREv3A_q3U550-Q"
         );
 
-
-        // ==========================================
-        // STEP 2: App State
-        // ==========================================
         // these variables hold our data while the page is open
         let students = [];       // the array of all students
         let currentPage = 0;     // which page we're viewing
         const PAGE_SIZE = 5;     // how many students per page
-
-
-        // ==========================================
-        // STEP 3: Helper Functions
-        // ==========================================
 
         // shows a small notification at the bottom of the screen
         let toastTimer;
@@ -476,13 +451,6 @@
         charCounter("name", "cc-name");
         charCounter("email", "cc-email");
         charCounter("course", "cc-course");
-
-
-        // ==========================================
-        // STEP 4: CRUD Functions
-        // ==========================================
-        // these are the main operations of the app
-        // each one updates the screen first, then saves to the database
 
         // CREATE: add a new student
         function addStudent() {
@@ -563,11 +531,8 @@
         }
 
 
-        // ==========================================
-        // STEP 5: UI Toggles
-        // ==========================================
-        // these swap between the normal view and the edit/delete forms
 
+        // these swap between the normal view and the edit/delete forms
         function startEdit(id) {
             document.getElementById(`view-${id}`).classList.add("hidden");
             document.getElementById(`edit-${id}`).classList.add("active");
@@ -589,12 +554,7 @@
             document.getElementById(`del-${id}`).classList.remove("active");
         }
 
-
-        // ==========================================
-        // STEP 6: Rendering
-        // ==========================================
         // this is how we draw the student list on the page
-
         // builds the HTML for one student row
         function appendRow(s, index) {
             const li = document.createElement("li");
@@ -677,9 +637,7 @@
         } else {
             document.getElementById("author").textContent = "Student";
         }
-        // ==========================================
-        // STEP 7: Start the App
-        // ==========================================
+
         // load students from the database
         loadStudents();
     </script>
