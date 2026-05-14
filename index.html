@@ -1,10 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Course Management System</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
     <style>
+        /* -- Reset -- */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -14,12 +18,13 @@
         body {
             font-family: 'DM Sans', sans-serif;
             background: #f4f4f5;
-            padding: 40px 20px;
+            padding: 16px 20px;
         }
 
+        /* -- Header -- */
         .header {
             text-align: center;
-            margin-bottom: 28px;
+            margin-bottom: 12px;
         }
 
         .header h1 {
@@ -34,15 +39,39 @@
             margin-top: 4px;
         }
 
+        /* -- Two column layout -- */
+        .layout {
+            display: flex;
+            gap: 24px;
+            max-width: 960px;
+            margin: 0 auto;
+            align-items: flex-start;
+        }
+
+        @media (max-width: 768px) {
+            .layout {
+                flex-direction: column;
+            }
+        }
+
+        /* -- Card panels -- */
         .card {
             background: #fff;
             border: 1px solid #e4e4e7;
             border-radius: 12px;
-            padding: 22px;
-            max-width: 540px;
-            margin: 0 auto 16px;
+            padding: 16px;
         }
 
+        .card.form-card {
+            flex: 0 0 320px;
+        }
+
+        .card.list-card {
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* -- Form inputs -- */
         .label {
             font-size: 0.7rem;
             font-weight: 600;
@@ -52,9 +81,9 @@
             margin-bottom: 12px;
         }
 
-        .row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+        .fields {
+            display: flex;
+            flex-direction: column;
             gap: 8px;
             margin-bottom: 8px;
         }
@@ -84,6 +113,7 @@
             margin-bottom: 8px;
         }
 
+        /* -- Buttons -- */
         button {
             padding: 7px 14px;
             border-radius: 7px;
@@ -133,15 +163,16 @@
             color: #e11d48;
         }
 
+        /* -- Student rows -- */
         ul {
             list-style: none;
         }
 
         li {
-            padding: 12px 14px;
+            padding: 8px 12px;
             border: 1px solid #f0f0f0;
             border-radius: 9px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         li:last-child {
@@ -159,30 +190,12 @@
             display: none;
         }
 
-        .row-edit.on {
+        .row-edit.active {
             display: block;
         }
 
-        .row-view.off {
+        .row-view.hidden {
             display: none;
-        }
-
-        .name {
-            font-weight: 600;
-            font-size: 0.87rem;
-            color: #18181b;
-        }
-
-        .course {
-            font-size: 0.79rem;
-            color: #6366f1;
-            font-weight: 500;
-            margin: 2px 0;
-        }
-
-        .email {
-            font-size: 0.76rem;
-            color: #a1a1aa;
         }
 
         .actions {
@@ -197,6 +210,40 @@
             margin-top: 8px;
         }
 
+        .idx {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #f4f4f5;
+            border: 1px solid #e4e4e7;
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: #a1a1aa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .sname {
+            font-weight: 600;
+            font-size: 0.87rem;
+            color: #18181b;
+        }
+
+        .scourse {
+            font-size: 0.79rem;
+            color: #6366f1;
+            font-weight: 500;
+            margin: 2px 0;
+        }
+
+        .semail {
+            font-size: 0.76rem;
+            color: #a1a1aa;
+        }
+
+        /* -- Empty state & toast -- */
         #empty {
             text-align: center;
             color: #c4c4c4;
@@ -228,6 +275,7 @@
 </head>
 
 <body>
+    <!-- Header -->
     <div class="header">
         <h1>Student Management System</h1>
         <p>Lab Exercise: Cloud-Based Database and Web Application</p>
@@ -245,41 +293,83 @@
         </a>
     </div>
 
-    <div class="card">
-        <div class="label">Add New Student</div>
-        <div class="row">
-            <input id="name" placeholder="Full name" autofocus>
-            <input id="email" placeholder="Email address">
-        </div>
-        <input id="course" placeholder="Course" class="mb">
-        <button id="add-btn" class="btn-primary" onclick="addStudent()">Add Student</button>
-    </div>
-
-    <div class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-            <div class="label" id="list-label" style="margin:0;">Student List</div>
-            <div id="pagination" style="display:none; gap:6px; align-items:center;">
-                <button onclick="changePage(-1)" id="btn-prev" class="btn-cancel"
-                    style="padding:3px 8px; font-size:0.7rem; margin:0;">Prev</button>
-                <span id="page-info" style="font-size:0.7rem; color:#a1a1aa; font-weight:500;">Page 1</span>
-                <button onclick="changePage(1)" id="btn-next" class="btn-cancel"
-                    style="padding:3px 8px; font-size:0.7rem; margin:0;">Next</button>
+    <!-- Main layout -->
+    <div class="layout">
+        <!-- Add student form -->
+        <div class="card form-card">
+            <div class="label">Add New Student</div>
+            <div class="fields">
+                <input id="name" placeholder="Full name" autofocus>
+                <input id="email" placeholder="Email address">
             </div>
+            <input id="course" placeholder="Course" class="mb">
+            <button class="btn-primary" onclick="addStudent()">Add Student</button>
         </div>
-        <ul id="list"></ul>
-        <p id="empty" style="display:none">No students yet.</p>
+
+        <!-- Student list -->
+        <div class="card list-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <div class="label" id="list-label" style="margin:0;">Student List</div>
+                <div id="pagination" style="display:none; gap:6px; align-items:center;">
+                    <button onclick="changePage(-1)" id="btn-prev" class="btn-cancel"
+                        style="padding:3px 8px; font-size:0.7rem;">Prev</button>
+                    <span id="page-info" style="font-size:0.7rem; color:#a1a1aa; font-weight:500;">Page 1</span>
+                    <button onclick="changePage(1)" id="btn-next" class="btn-cancel"
+                        style="padding:3px 8px; font-size:0.7rem;">Next</button>
+                </div>
+            </div>
+            <ul id="list"></ul>
+            <p id="empty" style="display:none">No students yet.</p>
+        </div>
     </div>
 
     <div id="toast"></div>
 
+    <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
     <script>
-        const { createClient } = supabase;
-        const client = createClient(
+        /*
+         * Step 1: Connect to Supabase (our cloud database)
+         * Step 2: Define the app state (the data we keep track of)
+         * Step 3: Small helper functions (toast, counting, etc.)
+         * Step 4: CRUD functions (Create, Read, Update, Delete)
+         * Step 5: UI toggle functions (switching between view/edit mode)
+         * Step 6: Rendering (how we display students on the page)
+         * Step 7: Start the app (fetch students from DB)
+         *
+         * Everything starts at Step 7 (bottom of the file).
+         * loadStudents() loads students from the database,
+         * then renderPage() draws them on screen.
+         * After that, user actions call the CRUD functions.
+         */
+
+
+        // ==========================================
+        // STEP 1: Connect to Supabase
+        // ==========================================
+        // we use supabase as our cloud database
+        // createClient takes the project URL and the public API key
+        const db = supabase.createClient(
             "https://jlsfllqpuzgyqekpoaqf.supabase.co",
             "sb_publishable__ZtrLIuhjmoUYwI6xREv3A_q3U550-Q"
         );
 
+
+        // ==========================================
+        // STEP 2: App State
+        // ==========================================
+        // these variables hold our data while the page is open
+        let students = [];       // the array of all students
+        let currentPage = 0;     // which page we're viewing
+        const PAGE_SIZE = 5;     // how many students per page
+
+
+        // ==========================================
+        // STEP 3: Helper Functions
+        // ==========================================
+
+        // shows a small notification at the bottom of the screen
         let toastTimer;
         function toast(msg) {
             const t = document.getElementById("toast");
@@ -289,139 +379,184 @@
             toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
         }
 
+        // updates the "Student List — X students" label
         function updateCount(n) {
             document.getElementById("list-label").textContent =
                 n > 0 ? `Student List — ${n} student${n !== 1 ? "s" : ""}` : "Student List";
         }
 
-        ["name", "email", "course"].forEach(id =>
-            document.getElementById(id).addEventListener("keydown", e => { if (e.key === "Enter") addStudent(); })
-        );
+        // shortcut to get a trimmed input value
+        function val(id) {
+            return document.getElementById(id).value.trim();
+        }
 
+        // pressing Enter in the form submits it, Escape cancels any open edit
+        ["name", "email", "course"].forEach(id =>
+            document.getElementById(id).addEventListener("keydown", e => {
+                if (e.key === "Enter") addStudent();
+            })
+        );
         document.addEventListener("keydown", e => {
             if (e.key === "Escape")
-                document.querySelectorAll(".row-edit.on").forEach(el => cancelEdit(el.id.replace("edit-", "")));
+                document.querySelectorAll(".row-edit.active").forEach(el =>
+                    cancelEdit(el.id.replace("edit-", ""))
+                );
         });
 
-        let currentPage = 0;
-        const PAGE_SIZE = 5;
 
-        function changePage(delta) {
-            currentPage += delta;
-            loadStudents();
-        }
+        // ==========================================
+        // STEP 4: CRUD Functions
+        // ==========================================
+        // these are the main operations of the app
+        // each one updates the screen first, then saves to the database
 
-        async function addStudent() {
-            const name = document.getElementById("name").value.trim();
-            const email = document.getElementById("email").value.trim();
-            const course = document.getElementById("course").value.trim();
-            if (!name || !email || !course) { document.getElementById(!name ? "name" : !email ? "email" : "course").focus(); return; }
-            const btn = document.getElementById("add-btn");
-            btn.disabled = true; btn.textContent = "Adding…";
+        // CREATE: add a new student
+        function addStudent() {
+            const name = val("name"), email = val("email"), course = val("course");
 
-            await client.from("students").insert([{ name, email, course }]);
-
-            ["name", "email", "course"].forEach(id => document.getElementById(id).value = "");
-            document.getElementById("name").focus();
-
-            btn.disabled = false; btn.textContent = "Add Student";
-            toast("✓ Student added");
-            const { count } = await client.from("students").select("*", { count: "exact", head: true });
-            currentPage = count ? Math.max(0, Math.ceil(count / PAGE_SIZE) - 1) : 0;
-            loadStudents();
-        }
-
-        function confirmDelete(id) {
-            document.getElementById(`view-${id}`).classList.add("off");
-            document.getElementById(`delete-confirm-${id}`).classList.add("on");
-        }
-
-        function cancelDelete(id) {
-            document.getElementById(`view-${id}`).classList.remove("off");
-            document.getElementById(`delete-confirm-${id}`).classList.remove("on");
-        }
-
-        async function deleteStudent(id) {
-            await client.from("students").delete().eq("id", id);
-            toast("Student removed");
-
-            // if we delete the last item on a page, go back one page
-            const listItems = document.querySelectorAll("#list li");
-            if (listItems.length === 1 && currentPage > 0) {
-                currentPage--;
+            // dont submit if any field is empty
+            if (!name || !email || !course) {
+                document.getElementById(!name ? "name" : !email ? "email" : "course").focus();
+                return;
             }
 
-            loadStudents();
+            // add it to our local array and show it right away
+            const tempId = "tmp-" + Date.now();
+            students.push({ id: tempId, name, email, course });
+            currentPage = Math.max(0, Math.ceil(students.length / PAGE_SIZE) - 1);
+            renderPage();
+
+            // clear the form
+            ["name", "email", "course"].forEach(id => document.getElementById(id).value = "");
+            document.getElementById("name").focus();
+            toast("✓ Student added");
+
+            // now save it to the database in the background
+            db.from("students").insert([{ name, email, course }]).select().single()
+                .then(({ data }) => {
+                    if (data) {
+                        const i = students.findIndex(s => s.id === tempId);
+                        if (i !== -1) students[i] = data;
+                        renderPage();
+                    }
+                });
         }
 
+        // READ: load all students from the database
+        async function loadStudents() {
+            const { data } = await db.from("students").select("*").order("id", { ascending: true });
+            students = data || [];
+            renderPage();
+        }
+
+        // UPDATE: save changes when editing a student
+        function saveEdit(id) {
+            const name = val(`en-${id}`), email = val(`ee-${id}`), course = val(`ec-${id}`);
+            if (!name || !email || !course) return;
+
+            // update in our local array
+            const s = students.find(s => s.id.toString() === id.toString());
+            if (s) { s.name = name; s.email = email; s.course = course; }
+
+            // update whats on screen
+            const view = document.getElementById(`view-${id}`);
+            view.querySelector(".sname").textContent = name;
+            view.querySelector(".scourse").textContent = course;
+            view.querySelector(".semail").textContent = email;
+            cancelEdit(id);
+            toast("✓ Changes saved");
+
+            // save to database
+            db.from("students").update({ name, email, course }).eq("id", id);
+        }
+
+        // DELETE: remove a student
+        function deleteStudent(id) {
+            students = students.filter(s => s.id.toString() !== id.toString());
+            renderPage();
+            toast("Student removed");
+            db.from("students").delete().eq("id", id);
+        }
+
+
+        // ==========================================
+        // STEP 5: UI Toggles
+        // ==========================================
+        // these swap between the normal view and the edit/delete forms
+
         function startEdit(id) {
-            document.getElementById(`view-${id}`).classList.add("off");
-            document.getElementById(`edit-${id}`).classList.add("on");
+            document.getElementById(`view-${id}`).classList.add("hidden");
+            document.getElementById(`edit-${id}`).classList.add("active");
             document.getElementById(`en-${id}`).focus();
         }
 
         function cancelEdit(id) {
-            document.getElementById(`view-${id}`).classList.remove("off");
-            document.getElementById(`edit-${id}`).classList.remove("on");
+            document.getElementById(`view-${id}`).classList.remove("hidden");
+            document.getElementById(`edit-${id}`).classList.remove("active");
         }
 
-        async function saveEdit(id) {
-            const name = document.getElementById(`en-${id}`).value.trim();
-            const email = document.getElementById(`ee-${id}`).value.trim();
-            const course = document.getElementById(`ec-${id}`).value.trim();
-            if (!name || !email || !course) return;
-            const view = document.getElementById(`view-${id}`);
-            view.querySelector(".name").textContent = name;
-            view.querySelector(".course").textContent = course;
-            view.querySelector(".email").textContent = email;
-            cancelEdit(id);
-            toast("✓ Changes saved");
-            document.getElementById("name").focus();
-            await client.from("students").update({ name, email, course }).eq("id", id);
+        function confirmDelete(id) {
+            document.getElementById(`view-${id}`).classList.add("hidden");
+            document.getElementById(`del-${id}`).classList.add("active");
         }
 
+        function cancelDelete(id) {
+            document.getElementById(`view-${id}`).classList.remove("hidden");
+            document.getElementById(`del-${id}`).classList.remove("active");
+        }
+
+
+        // ==========================================
+        // STEP 6: Rendering
+        // ==========================================
+        // this is how we draw the student list on the page
+
+        // builds the HTML for one student row
         function appendRow(s, index) {
             const li = document.createElement("li");
-            li.id = `li-${s.id}`;
             li.innerHTML = `
                 <div class="row-view" id="view-${s.id}">
                     <div style="display:flex;align-items:center;gap:10px">
-                        <span style="width:22px;height:22px;border-radius:50%;background:#f4f4f5;border:1px solid #e4e4e7;font-size:0.68rem;font-weight:600;color:#a1a1aa;display:flex;align-items:center;justify-content:center;flex-shrink:0">${index}</span>
-                        <div><div class="name">${s.name}</div><div class="course">${s.course}</div><div class="email">${s.email}</div></div>
+                        <span class="idx">${index}</span>
+                        <div>
+                            <div class="sname">${s.name}</div>
+                            <div class="scourse">${s.course}</div>
+                            <div class="semail">${s.email}</div>
+                        </div>
                     </div>
                     <div class="actions">
                         <button class="btn-edit" onclick="startEdit('${s.id}')">Edit</button>
-                        <button class="btn-del"  onclick="confirmDelete('${s.id}')">Delete</button>
+                        <button class="btn-del" onclick="confirmDelete('${s.id}')">Delete</button>
                     </div>
                 </div>
-                <div class="row-edit" id="delete-confirm-${s.id}" style="background:#fff1f2; border: 1px solid #ffe4e6; padding:12px; border-radius:8px;">
-                    <div style="font-size:0.85rem; color:#be123c; margin-bottom:8px;">Delete <b>${s.name}</b>?</div>
-                    <div style="display:flex; gap:6px;">
-                        <button class="btn-del" style="background:#e11d48; color:#fff;" onclick="deleteStudent('${s.id}')">Yes, Delete</button>
-                        <button class="btn-cancel" style="background:transparent; color:#be123c;" onclick="cancelDelete('${s.id}')">Cancel</button>
+                <div class="row-edit" id="del-${s.id}" style="background:#fff1f2;border:1px solid #ffe4e6;padding:12px;border-radius:8px;">
+                    <div style="font-size:0.85rem;color:#be123c;margin-bottom:8px;">Delete <b>${s.name}</b>?</div>
+                    <div style="display:flex;gap:6px;">
+                        <button class="btn-del" style="background:#e11d48;color:#fff;" onclick="deleteStudent('${s.id}')">Yes, Delete</button>
+                        <button class="btn-cancel" style="background:transparent;color:#be123c;" onclick="cancelDelete('${s.id}')">Cancel</button>
                     </div>
                 </div>
                 <div class="row-edit" id="edit-${s.id}">
-                    <div class="row"><input id="en-${s.id}" value="${s.name}" placeholder="Name"><input id="ee-${s.id}" value="${s.email}" placeholder="Email"></div>
+                    <div class="fields">
+                        <input id="en-${s.id}" value="${s.name}" placeholder="Name">
+                        <input id="ee-${s.id}" value="${s.email}" placeholder="Email">
+                    </div>
                     <input id="ec-${s.id}" value="${s.course}" placeholder="Course" class="mb">
-                    <div class="edit-actions"><button class="btn-save" onclick="saveEdit('${s.id}')">Save</button><button class="btn-cancel" onclick="cancelEdit('${s.id}')">Cancel</button></div>
+                    <div class="edit-actions">
+                        <button class="btn-save" onclick="saveEdit('${s.id}')">Save</button>
+                        <button class="btn-cancel" onclick="cancelEdit('${s.id}')">Cancel</button>
+                    </div>
                 </div>`;
             document.getElementById("list").appendChild(li);
         }
 
-        async function loadStudents() {
-            const from = currentPage * PAGE_SIZE;
-            const to = from + PAGE_SIZE - 1;
-
-            const { data, count } = await client
-                .from("students")
-                .select("*", { count: "exact" })
-                .order("id", { ascending: true })
-                .range(from, to);
-
+        // renders the current page of students
+        function renderPage() {
             document.getElementById("list").innerHTML = "";
+            const total = students.length;
 
-            if (!data || data.length === 0) {
+            // if theres no students, show empty message
+            if (total === 0) {
                 document.getElementById("empty").style.display = "block";
                 document.getElementById("pagination").style.display = "none";
                 updateCount(0);
@@ -429,16 +564,33 @@
             }
 
             document.getElementById("empty").style.display = "none";
-            document.getElementById("pagination").style.display = count > PAGE_SIZE ? "flex" : "none";
+            document.getElementById("pagination").style.display = total > PAGE_SIZE ? "flex" : "none";
 
+            // figure out which page we're on
+            const maxPage = Math.max(0, Math.ceil(total / PAGE_SIZE) - 1);
+            if (currentPage > maxPage) currentPage = maxPage;
+
+            // slice the students array for just this page
+            const from = currentPage * PAGE_SIZE;
+            const pageData = students.slice(from, from + PAGE_SIZE);
+
+            // update the prev/next buttons
             document.getElementById("btn-prev").disabled = currentPage === 0;
-            document.getElementById("btn-next").disabled = to >= count - 1;
+            document.getElementById("btn-next").disabled = currentPage >= maxPage;
             document.getElementById("page-info").textContent = `Page ${currentPage + 1}`;
 
-            data.forEach((s, i) => appendRow(s, from + i + 1));
-            updateCount(count);
+            // draw each student
+            pageData.forEach((s, i) => appendRow(s, from + i + 1));
+            updateCount(total);
         }
 
+        function changePage(delta) { currentPage += delta; renderPage(); }
+
+
+        // ==========================================
+        // STEP 7: Start the App
+        // ==========================================
+        // this is where everything begins — load students from the database
         loadStudents();
     </script>
 </body>
