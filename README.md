@@ -4,9 +4,6 @@ A cloud-based web application developed for the Distributed Systems course lab e
 
 **Live Demo:** [https://cloud-lab-mauve.vercel.app/](https://cloud-lab-mauve.vercel.app/)
 
-## Status
-✅ All lab tasks successfully completed!
-
 ## Features
 - **Add Students:** Register new students with their name, email, and course.
 - **View Students:** Display a paginated list of all registered students.
