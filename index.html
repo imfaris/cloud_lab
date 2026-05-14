@@ -347,6 +347,27 @@
             opacity: 1;
             transform: translateX(-50%) translateY(0);
         }
+
+        /* -- Autocomplete -- */
+        .ac-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.15s;
+        }
+        .ac-item:hover {
+            background: #f4f4f5;
+        }
+        .ac-name {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #18181b;
+        }
+        .ac-course {
+            font-size: 0.72rem;
+            color: #a1a1aa;
+            margin-top: 2px;
+        }
     </style>
 </head>
 
@@ -396,6 +417,10 @@
             <div
                 style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
                 <div class="label" id="list-label" style="margin:0;">Student List</div>
+                <div style="flex:1; min-width: 140px; position: relative;">
+                    <input id="search-input" placeholder="Search..." autocomplete="off" oninput="handleSearch()" onfocus="handleSearch()" style="margin:0; padding: 7px 10px; font-size: 0.8rem; background: #fff;">
+                    <ul id="autocomplete-list" style="display:none; position:absolute; top:100%; left:0; width:100%; background:#fff; border:1px solid #e4e4e7; border-radius:8px; max-height:180px; overflow-y:auto; z-index:10; box-shadow:0 4px 12px rgba(0,0,0,0.08); margin-top:4px; padding:4px;"></ul>
+                </div>
                 <div id="pagination" style="display:none; gap:6px; align-items:center; padding-right:6px;">
                     <button onclick="changePage(-1)" id="btn-prev" class="btn-cancel"
                         style="padding:3px 8px; font-size:0.7rem; width:50px;">Prev</button>
@@ -428,6 +453,56 @@
         let students = [];       // the array of all students
         let currentPage = 0;     // which page we're viewing
         const PAGE_SIZE = 5;     // how many students per page
+        let searchQuery = "";    // current search string
+
+        function handleSearch() {
+            const val = document.getElementById("search-input").value.toLowerCase();
+            const acList = document.getElementById("autocomplete-list");
+            searchQuery = val;
+            
+            if (!val) {
+                acList.style.display = "none";
+                currentPage = 0;
+                renderPage();
+                return;
+            }
+            
+            const matches = students.filter(s => 
+                s.name.toLowerCase().includes(val) || 
+                s.course.toLowerCase().includes(val) ||
+                s.email.toLowerCase().includes(val)
+            );
+            
+            if (matches.length > 0) {
+                acList.innerHTML = "";
+                matches.slice(0, 6).forEach(m => {
+                    const li = document.createElement("li");
+                    li.className = "ac-item";
+                    li.innerHTML = `<div class="ac-name">${m.name}</div><div class="ac-course">${m.course}</div>`;
+                    li.onmousedown = () => {
+                        document.getElementById("search-input").value = m.name;
+                        searchQuery = m.name.toLowerCase();
+                        acList.style.display = "none";
+                        currentPage = 0;
+                        renderPage();
+                    };
+                    acList.appendChild(li);
+                });
+                acList.style.display = "block";
+            } else {
+                acList.style.display = "none";
+            }
+            
+            currentPage = 0;
+            renderPage();
+        }
+
+        document.addEventListener("mousedown", (e) => {
+            if (e.target !== document.getElementById("search-input")) {
+                const acList = document.getElementById("autocomplete-list");
+                if (acList) acList.style.display = "none";
+            }
+        });
 
         // shows a small notification at the bottom of the screen
         let toastTimer;
@@ -627,7 +702,12 @@
         // renders the current page of students
         function renderPage() {
             document.getElementById("list").innerHTML = "";
-            const total = students.length;
+            
+            const filtered = searchQuery 
+                ? students.filter(s => s.name.toLowerCase().includes(searchQuery) || s.course.toLowerCase().includes(searchQuery) || s.email.toLowerCase().includes(searchQuery))
+                : students;
+
+            const total = filtered.length;
 
             // if theres no students, show empty message
             if (total === 0) {
@@ -646,7 +726,7 @@
 
             // slice the students array for just this page
             const from = currentPage * PAGE_SIZE;
-            const pageData = students.slice(from, from + PAGE_SIZE);
+            const pageData = filtered.slice(from, from + PAGE_SIZE);
 
             // update the prev/next buttons
             document.getElementById("btn-prev").disabled = currentPage === 0;
