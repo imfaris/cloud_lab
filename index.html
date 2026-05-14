@@ -390,7 +390,7 @@
         <p>Lab Exercise: Cloud-Based Database and Web Application</p>
         <p style="margin-top:6px;font-size:0.75rem;color:#a1a1aa">
             Course: Distributed Systems &nbsp;·&nbsp; Topic: Cloud Databases and Web Application Integration
-            &nbsp;·&nbsp; <strong style="color:#a1a1aa" id="author"></strong>
+            <strong style="color:#a1a1aa" id="author"></strong>
         </p>
         <a href="https://github.com/imfaris/cloud_lab" target="_blank"
             style="display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:4px 10px;background:#f4f4f5;border:1px solid #e4e4e7;border-radius:6px;font-size:0.75rem;color:#52525b;text-decoration:none;">
@@ -651,6 +651,8 @@
             db.from("students").delete().eq("id", id).then();
         }
 
+
+
         // these swap between the normal view and the edit/delete forms
         function startEdit(id) {
             document.getElementById(`view-${id}`).classList.add("hidden");
@@ -757,7 +759,7 @@
         // stuff
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('v') === '1') {
-            document.getElementById("author").textContent = atob("RmFyaXMgQWxzdWZ5YW5p");
+            document.getElementById("author").textContent = " · " + atob("RmFyaXMgQWxzdWZ5YW5p");
         } else {
             document.getElementById("author").textContent = "";
         }
