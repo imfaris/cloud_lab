@@ -14,7 +14,7 @@ A cloud-based web application developed for the Distributed Systems course lab e
    <br><img src="task1.png" width="400" style="margin-top: 8px;" />
 
 2. **Task 2: Create index.html**
-   Build the basic student management page structure with HTML and JavaScript.
+   Build the basic student management page structure with HTML, CSS and JavaScript.
    <br><img src="task2.png" width="400" style="margin-top: 8px;" />
 
 3. **Task 3: Configure Project URL and API Key**
