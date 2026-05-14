@@ -59,9 +59,11 @@
         }
 
         @media (max-width: 768px) {
-            body {
+            html, body {
                 height: auto;
                 overflow: auto;
+            }
+            body {
                 padding: 16px;
             }
             .layout {
@@ -76,6 +78,7 @@
                 flex: none;
                 width: 100%;
                 overflow: visible;
+                max-height: none;
             }
             ul {
                 overflow-y: visible;
