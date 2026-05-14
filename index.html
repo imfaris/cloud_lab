@@ -59,8 +59,35 @@
         }
 
         @media (max-width: 768px) {
+            body {
+                height: auto;
+                overflow: auto;
+                padding: 16px;
+            }
             .layout {
                 flex-direction: column;
+                gap: 16px;
+            }
+            .card.form-card {
+                flex: none;
+                width: 100%;
+            }
+            .card.list-card {
+                flex: none;
+                width: 100%;
+                overflow: visible;
+            }
+            ul {
+                overflow-y: visible;
+                flex: none;
+            }
+            .row-view {
+                flex-wrap: wrap;
+            }
+            .actions {
+                width: 100%;
+                justify-content: flex-end;
+                margin-top: 4px;
             }
         }
 
