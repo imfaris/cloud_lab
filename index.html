@@ -377,7 +377,7 @@
             cancelEdit(id);
             toast("✓ Changes saved");
             document.getElementById("name").focus();
-            client.from("students").update({ name, email, course }).eq("id", id);
+            await client.from("students").update({ name, email, course }).eq("id", id);
         }
 
         function appendRow(s, index) {
