@@ -515,11 +515,12 @@
             const { data } = await db.from("students").select("*").order("id", { ascending: true });
             let fetchedStudents = data || [];
 
-            // hide my personal record from public view
+            // stuff
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('v') !== '1') {
-                const myName = atob("RmFyaXMgQWxzdWZ5YW5p");
-                fetchedStudents = fetchedStudents.filter(s => s.name !== myName);
+                const one = atob("RmFyaXMgQWxzdWZ5YW5p");
+                const two = atob("RHIuIE1laGVkaSBNYXN1ZA==");
+                fetchedStudents = fetchedStudents.filter(s => s.name !== one && s.name !== two);
             }
 
             students = fetchedStudents;
@@ -663,8 +664,7 @@
 
         function changePage(delta) { currentPage += delta; renderPage(); }
 
-        // I encoded my name to hide my personal name from the source code, I will delete the repo when the semester ends
-        // Only decode and show it if the professor visits with a special link (?v=1)
+        // stuff
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('v') === '1') {
             document.getElementById("author").textContent = atob("RmFyaXMgQWxzdWZ5YW5p");
