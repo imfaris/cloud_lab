@@ -79,7 +79,9 @@
         .card.list-card {
             flex: 1;
             min-width: 0;
-            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
             max-height: 100%;
         }
 
@@ -178,6 +180,10 @@
         /* -- Student rows -- */
         ul {
             list-style: none;
+            overflow-y: auto;
+            flex: 1;
+            min-height: 0;
+            padding-right: 4px;
         }
 
         li {
@@ -357,14 +363,14 @@
 
         <!-- Student list -->
         <div class="card list-card">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
                 <div class="label" id="list-label" style="margin:0;">Student List</div>
-                <div id="pagination" style="display:none; gap:6px; align-items:center;">
+                <div id="pagination" style="display:none; gap:6px; align-items:center; padding-right:6px;">
                     <button onclick="changePage(-1)" id="btn-prev" class="btn-cancel"
-                        style="padding:3px 8px; font-size:0.7rem;">Prev</button>
-                    <span id="page-info" style="font-size:0.7rem; color:#a1a1aa; font-weight:500;">Page 1</span>
+                        style="padding:3px 8px; font-size:0.7rem; width:50px;">Prev</button>
+                    <span id="page-info" style="font-size:0.7rem; color:#a1a1aa; font-weight:500; width:50px; text-align:center;">Page 1</span>
                     <button onclick="changePage(1)" id="btn-next" class="btn-cancel"
-                        style="padding:3px 8px; font-size:0.7rem;">Next</button>
+                        style="padding:3px 8px; font-size:0.7rem; width:50px;">Next</button>
                 </div>
             </div>
             <ul id="list"></ul>
