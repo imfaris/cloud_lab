@@ -513,7 +513,16 @@
         // READ: load all students from the database
         async function loadStudents() {
             const { data } = await db.from("students").select("*").order("id", { ascending: true });
-            students = data || [];
+            let fetchedStudents = data || [];
+
+            // hide my personal record from public view
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('v') !== '1') {
+                const myName = atob("RmFyaXMgQWxzdWZ5YW5p");
+                fetchedStudents = fetchedStudents.filter(s => s.name !== myName);
+            }
+
+            students = fetchedStudents;
             renderPage();
         }
 
@@ -655,7 +664,13 @@
         function changePage(delta) { currentPage += delta; renderPage(); }
 
         // I encoded my name to hide my personal name from the source code, I will delete the repo when the semester ends
-        document.getElementById("author").textContent = atob("RmFyaXMgQWxzdWZ5YW5p");
+        // Only decode and show it if the professor visits with a special link (?v=1)
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('v') === '1') {
+            document.getElementById("author").textContent = atob("RmFyaXMgQWxzdWZ5YW5p");
+        } else {
+            document.getElementById("author").textContent = "Student";
+        }
         // ==========================================
         // STEP 7: Start the App
         // ==========================================
