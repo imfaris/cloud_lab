@@ -9,19 +9,19 @@ A cloud-based web application developed for the Distributed Systems course lab e
 - **Topic:** Cloud Databases and Web Application Integration
 
 ## Lab Tasks Completed
-1. **Task 1: Create Cloud DB and Execute SQL**
+**Task 1: Create Cloud DB and Execute SQL**
    Set up the cloud database in Supabase and create the students table using SQL.
    <br><img src="task1.png" width="400" style="margin-top: 8px;" />
 
-2. **Task 2: Create index.html**
+**Task 2: Create index.html**
    Build the basic student management page structure with HTML, CSS and JavaScript.
    <br><img src="task2.png" width="400" style="margin-top: 8px;" />
 
-3. **Task 3: Configure Project URL and API Key**
+**Task 3: Configure Project URL and API Key**
    Connect the web app to Supabase by adding the project URL and API key.
    <br><img src="task3.png" width="400" style="margin-top: 8px;" />
 
-4. **Task 4: Deployment**
+**Task 4: Deployment**
    Deploy the finished project and verify that the application is running successfully online.
    <br><img src="task4.png" width="400" style="margin-top: 8px;" />
 
