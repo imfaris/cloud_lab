@@ -15,10 +15,18 @@
             padding: 0;
         }
 
+        html,
+        body {
+            height: 100vh;
+            overflow: hidden;
+        }
+
         body {
             font-family: 'DM Sans', sans-serif;
             background: #f4f4f5;
             padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
         }
 
         /* -- Header -- */
@@ -46,6 +54,8 @@
             max-width: 960px;
             margin: 0 auto;
             align-items: flex-start;
+            flex: 1;
+            min-height: 0;
         }
 
         @media (max-width: 768px) {
@@ -69,6 +79,8 @@
         .card.list-card {
             flex: 1;
             min-width: 0;
+            overflow-y: auto;
+            max-height: 100%;
         }
 
         /* -- Form inputs -- */
@@ -184,6 +196,7 @@
             align-items: center;
             justify-content: space-between;
             gap: 10px;
+            min-width: 0;
         }
 
         .row-edit {
@@ -229,6 +242,9 @@
             font-weight: 600;
             font-size: 0.87rem;
             color: #18181b;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .scourse {
@@ -236,11 +252,35 @@
             color: #6366f1;
             font-weight: 500;
             margin: 2px 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .semail {
             font-size: 0.76rem;
             color: #a1a1aa;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* -- Char counter -- */
+        .char-count {
+            display: block;
+            text-align: right;
+            font-size: 0.68rem;
+            color: #a1a1aa;
+            margin-top: 3px;
+            min-height: 14px;
+        }
+
+        .char-count.warn {
+            color: #f97316;
+        }
+
+        .char-count.danger {
+            color: #e11d48;
         }
 
         /* -- Empty state & toast -- */
@@ -281,7 +321,7 @@
         <p>Lab Exercise: Cloud-Based Database and Web Application</p>
         <p style="margin-top:6px;font-size:0.75rem;color:#a1a1aa">
             Course: Distributed Systems &nbsp;·&nbsp; Topic: Cloud Databases and Web Application Integration
-            &nbsp;·&nbsp; <strong style="color:#a1a1aa">Faris</strong>
+            &nbsp;·&nbsp; <strong style="color:#a1a1aa" id="author"></strong>
         </p>
         <a href="https://github.com/imfaris/cloud_lab" target="_blank"
             style="display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:4px 10px;background:#f4f4f5;border:1px solid #e4e4e7;border-radius:6px;font-size:0.75rem;color:#52525b;text-decoration:none;">
@@ -299,10 +339,19 @@
         <div class="card form-card">
             <div class="label">Add New Student</div>
             <div class="fields">
-                <input id="name" placeholder="Full name" autofocus>
-                <input id="email" placeholder="Email address">
+                <div class="input-wrap">
+                    <input id="name" placeholder="Full name" maxlength="50" autofocus>
+                    <span class="char-count" id="cc-name"></span>
+                </div>
+                <div class="input-wrap">
+                    <input id="email" placeholder="Email address" maxlength="50">
+                    <span class="char-count" id="cc-email"></span>
+                </div>
             </div>
-            <input id="course" placeholder="Course" class="mb">
+            <div class="input-wrap mb">
+                <input id="course" placeholder="Course" maxlength="50" style="margin:0">
+                <span class="char-count" id="cc-course"></span>
+            </div>
             <button class="btn-primary" onclick="addStudent()">Add Student</button>
         </div>
 
@@ -403,6 +452,25 @@
                 );
         });
 
+        // shows a character countdown when you're close to the 50 char limit
+        function charCounter(inputId, counterId) {
+            const input = document.getElementById(inputId);
+            const counter = document.getElementById(counterId);
+            input.addEventListener("input", () => {
+                const remaining = 50 - input.value.length;
+                if (remaining <= 15) {
+                    counter.textContent = remaining + " chars left";
+                    counter.className = "char-count " + (remaining <= 5 ? "danger" : "warn");
+                } else {
+                    counter.textContent = "";
+                    counter.className = "char-count";
+                }
+            });
+        }
+        charCounter("name", "cc-name");
+        charCounter("email", "cc-email");
+        charCounter("course", "cc-course");
+
 
         // ==========================================
         // STEP 4: CRUD Functions
@@ -467,7 +535,7 @@
             toast("✓ Changes saved");
 
             // save to database
-            db.from("students").update({ name, email, course }).eq("id", id);
+            db.from("students").update({ name, email, course }).eq("id", id).then();
         }
 
         // DELETE: remove a student
@@ -475,7 +543,7 @@
             students = students.filter(s => s.id.toString() !== id.toString());
             renderPage();
             toast("Student removed");
-            db.from("students").delete().eq("id", id);
+            db.from("students").delete().eq("id", id).then();
         }
 
 
@@ -516,7 +584,7 @@
             const li = document.createElement("li");
             li.innerHTML = `
                 <div class="row-view" id="view-${s.id}">
-                    <div style="display:flex;align-items:center;gap:10px">
+                    <div style="display:flex;align-items:center;gap:10px;min-width:0">
                         <span class="idx">${index}</span>
                         <div>
                             <div class="sname">${s.name}</div>
@@ -586,11 +654,12 @@
 
         function changePage(delta) { currentPage += delta; renderPage(); }
 
-
+        // I encoded my name to hide my personal name from the source code, I will delete the repo when the semester ends
+        document.getElementById("author").textContent = atob("RmFyaXMgQWxzdWZ5YW5p");
         // ==========================================
         // STEP 7: Start the App
         // ==========================================
-        // this is where everything begins — load students from the database
+        // load students from the database
         loadStudents();
     </script>
 </body>
