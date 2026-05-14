@@ -3,54 +3,275 @@
 
 <head>
     <title>Student Course Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 40px auto;
-            padding: 0 20px;
+            font-family: 'DM Sans', sans-serif;
+            background: #f4f4f5;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .header h1 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #18181b;
+        }
+
+        .header p {
+            font-size: 0.8rem;
+            color: #a1a1aa;
+            margin-top: 4px;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid #e4e4e7;
+            border-radius: 12px;
+            padding: 22px;
+            max-width: 540px;
+            margin: 0 auto 16px;
+        }
+
+        .label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            color: #71717a;
+            margin-bottom: 12px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
         }
 
         input {
-            margin: 4px;
-            padding: 6px;
-            width: 180px;
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #e4e4e7;
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            outline: none;
+            background: #fafafa;
+            transition: border-color 0.15s;
+        }
+
+        input:focus {
+            border-color: #71717a;
+            background: #fff;
+        }
+
+        input::placeholder {
+            color: #c4c4c4;
+        }
+
+        .mb {
+            margin-bottom: 8px;
         }
 
         button {
-            margin: 4px;
-            padding: 6px 12px;
+            padding: 7px 14px;
+            border-radius: 7px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 500;
             cursor: pointer;
+            border: none;
+            transition: opacity 0.15s;
+        }
+
+        button:hover {
+            opacity: 0.75;
+        }
+
+        button:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 10px;
+            background: #18181b;
+            color: #fff;
+            font-size: 0.875rem;
+            margin-top: 8px;
+        }
+
+        .btn-save {
+            background: #18181b;
+            color: #fff;
+        }
+
+        .btn-cancel {
+            background: #f4f4f5;
+            color: #52525b;
+        }
+
+        .btn-edit {
+            background: #f4f4f5;
+            color: #3f3f46;
+        }
+
+        .btn-del {
+            background: #fff1f2;
+            color: #e11d48;
+        }
+
+        ul {
+            list-style: none;
         }
 
         li {
-            margin: 8px 0;
+            padding: 12px 14px;
+            border: 1px solid #f0f0f0;
+            border-radius: 9px;
+            margin-bottom: 8px;
         }
 
-        .del-btn {
-            color: red;
-            background: none;
-            border: 1px solid red;
-            border-radius: 4px;
+        li:last-child {
+            margin-bottom: 0;
         }
 
-        .edit-btn {
-            color: blue;
-            background: none;
-            border: 1px solid blue;
-            border-radius: 4px;
+        .row-view {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .row-edit {
+            display: none;
+        }
+
+        .row-edit.on {
+            display: block;
+        }
+
+        .row-view.off {
+            display: none;
+        }
+
+        .name {
+            font-weight: 600;
+            font-size: 0.87rem;
+            color: #18181b;
+        }
+
+        .course {
+            font-size: 0.79rem;
+            color: #6366f1;
+            font-weight: 500;
+            margin: 2px 0;
+        }
+
+        .email {
+            font-size: 0.76rem;
+            color: #a1a1aa;
+        }
+
+        .actions {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .edit-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        #empty {
+            text-align: center;
+            color: #c4c4c4;
+            font-size: 0.85rem;
+            padding: 16px 0;
+        }
+
+        #toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: #18181b;
+            color: #fff;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            opacity: 0;
+            transition: opacity 0.2s, transform 0.2s;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
         }
     </style>
 </head>
 
 <body>
-    <h2>Add Student</h2>
-    <input id="name" placeholder="Name">
-    <input id="email" placeholder="Email">
-    <input id="course" placeholder="Course">
-    <button onclick="addStudent()">Add</button>
-    <h2>Student List</h2>
-    <ul id="list"></ul>
+    <div class="header">
+        <h1>Student Management System</h1>
+        <p>Lab Exercise: Cloud-Based Database and Web Application</p>
+        <p style="margin-top:6px;font-size:0.75rem;color:#a1a1aa">
+            Course: Distributed Systems &nbsp;·&nbsp; Topic: Cloud Databases and Web Application Integration
+            &nbsp;·&nbsp; <strong style="color:#a1a1aa">Faris</strong>
+        </p>
+        <a href="https://github.com/imfaris/cloud_lab" target="_blank"
+            style="display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:4px 10px;background:#f4f4f5;border:1px solid #e4e4e7;border-radius:6px;font-size:0.75rem;color:#52525b;text-decoration:none;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.63-5.37-12-12-12z" />
+            </svg>
+            imfaris/cloud_lab
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="label">Add New Student</div>
+        <div class="row">
+            <input id="name" placeholder="Full name" autofocus>
+            <input id="email" placeholder="Email address">
+        </div>
+        <input id="course" placeholder="Course" class="mb">
+        <button id="add-btn" class="btn-primary" onclick="addStudent()">Add Student</button>
+    </div>
+
+    <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <div class="label" id="list-label" style="margin:0;">Student List</div>
+            <div id="pagination" style="display:none; gap:6px; align-items:center;">
+                <button onclick="changePage(-1)" id="btn-prev" class="btn-cancel"
+                    style="padding:3px 8px; font-size:0.7rem; margin:0;">Prev</button>
+                <span id="page-info" style="font-size:0.7rem; color:#a1a1aa; font-weight:500;">Page 1</span>
+                <button onclick="changePage(1)" id="btn-next" class="btn-cancel"
+                    style="padding:3px 8px; font-size:0.7rem; margin:0;">Next</button>
+            </div>
+        </div>
+        <ul id="list"></ul>
+        <p id="empty" style="display:none">No students yet.</p>
+    </div>
+
+    <div id="toast"></div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script>
         const { createClient } = supabase;
@@ -58,41 +279,166 @@
             "https://jlsfllqpuzgyqekpoaqf.supabase.co",
             "sb_publishable__ZtrLIuhjmoUYwI6xREv3A_q3U550-Q"
         );
-        async function addStudent() {
-            const name = document.getElementById("name").value;
-            const email = document.getElementById("email").value;
-            const course = document.getElementById("course").value;
-            if (!name || !email || !course) return alert("Fill all fields");
-            await client.from("students").insert([{ name, email, course }]);
-            document.getElementById("name").value = "";
-            document.getElementById("email").value = "";
-            document.getElementById("course").value = "";
+
+        let toastTimer;
+        function toast(msg) {
+            const t = document.getElementById("toast");
+            t.textContent = msg;
+            t.classList.add("show");
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
+        }
+
+        function updateCount(n) {
+            document.getElementById("list-label").textContent =
+                n > 0 ? `Student List — ${n} student${n !== 1 ? "s" : ""}` : "Student List";
+        }
+
+        ["name", "email", "course"].forEach(id =>
+            document.getElementById(id).addEventListener("keydown", e => { if (e.key === "Enter") addStudent(); })
+        );
+
+        document.addEventListener("keydown", e => {
+            if (e.key === "Escape")
+                document.querySelectorAll(".row-edit.on").forEach(el => cancelEdit(el.id.replace("edit-", "")));
+        });
+
+        let currentPage = 0;
+        const PAGE_SIZE = 5;
+
+        function changePage(delta) {
+            currentPage += delta;
             loadStudents();
         }
+
+        async function addStudent() {
+            const name = document.getElementById("name").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const course = document.getElementById("course").value.trim();
+            if (!name || !email || !course) { document.getElementById(!name ? "name" : !email ? "email" : "course").focus(); return; }
+            const btn = document.getElementById("add-btn");
+            btn.disabled = true; btn.textContent = "Adding…";
+
+            await client.from("students").insert([{ name, email, course }]);
+
+            ["name", "email", "course"].forEach(id => document.getElementById(id).value = "");
+            document.getElementById("name").focus();
+
+            btn.disabled = false; btn.textContent = "Add Student";
+            toast("✓ Student added");
+            const { count } = await client.from("students").select("*", { count: "exact", head: true });
+            currentPage = count ? Math.max(0, Math.ceil(count / PAGE_SIZE) - 1) : 0;
+            loadStudents();
+        }
+
+        function confirmDelete(id) {
+            document.getElementById(`view-${id}`).classList.add("off");
+            document.getElementById(`delete-confirm-${id}`).classList.add("on");
+        }
+
+        function cancelDelete(id) {
+            document.getElementById(`view-${id}`).classList.remove("off");
+            document.getElementById(`delete-confirm-${id}`).classList.remove("on");
+        }
+
         async function deleteStudent(id) {
             await client.from("students").delete().eq("id", id);
+            toast("Student removed");
+
+            // if we delete the last item on a page, go back one page
+            const listItems = document.querySelectorAll("#list li");
+            if (listItems.length === 1 && currentPage > 0) {
+                currentPage--;
+            }
+
             loadStudents();
         }
-        async function updateStudent(id, name, email, course) {
-            const newName = prompt("New name:", name);
-            const newEmail = prompt("New email:", email);
-            const newCourse = prompt("New course:", course);
-            if (!newName || !newEmail || !newCourse) return;
-            await client.from("students").update({ name: newName, email: newEmail, course: newCourse }).eq("id", id);
-            loadStudents();
+
+        function startEdit(id) {
+            document.getElementById(`view-${id}`).classList.add("off");
+            document.getElementById(`edit-${id}`).classList.add("on");
+            document.getElementById(`en-${id}`).focus();
         }
+
+        function cancelEdit(id) {
+            document.getElementById(`view-${id}`).classList.remove("off");
+            document.getElementById(`edit-${id}`).classList.remove("on");
+        }
+
+        async function saveEdit(id) {
+            const name = document.getElementById(`en-${id}`).value.trim();
+            const email = document.getElementById(`ee-${id}`).value.trim();
+            const course = document.getElementById(`ec-${id}`).value.trim();
+            if (!name || !email || !course) return;
+            const view = document.getElementById(`view-${id}`);
+            view.querySelector(".name").textContent = name;
+            view.querySelector(".course").textContent = course;
+            view.querySelector(".email").textContent = email;
+            cancelEdit(id);
+            toast("✓ Changes saved");
+            document.getElementById("name").focus();
+            client.from("students").update({ name, email, course }).eq("id", id);
+        }
+
+        function appendRow(s, index) {
+            const li = document.createElement("li");
+            li.id = `li-${s.id}`;
+            li.innerHTML = `
+                <div class="row-view" id="view-${s.id}">
+                    <div style="display:flex;align-items:center;gap:10px">
+                        <span style="width:22px;height:22px;border-radius:50%;background:#f4f4f5;border:1px solid #e4e4e7;font-size:0.68rem;font-weight:600;color:#a1a1aa;display:flex;align-items:center;justify-content:center;flex-shrink:0">${index}</span>
+                        <div><div class="name">${s.name}</div><div class="course">${s.course}</div><div class="email">${s.email}</div></div>
+                    </div>
+                    <div class="actions">
+                        <button class="btn-edit" onclick="startEdit('${s.id}')">Edit</button>
+                        <button class="btn-del"  onclick="confirmDelete('${s.id}')">Delete</button>
+                    </div>
+                </div>
+                <div class="row-edit" id="delete-confirm-${s.id}" style="background:#fff1f2; border: 1px solid #ffe4e6; padding:12px; border-radius:8px;">
+                    <div style="font-size:0.85rem; color:#be123c; margin-bottom:8px;">Delete <b>${s.name}</b>?</div>
+                    <div style="display:flex; gap:6px;">
+                        <button class="btn-del" style="background:#e11d48; color:#fff;" onclick="deleteStudent('${s.id}')">Yes, Delete</button>
+                        <button class="btn-cancel" style="background:transparent; color:#be123c;" onclick="cancelDelete('${s.id}')">Cancel</button>
+                    </div>
+                </div>
+                <div class="row-edit" id="edit-${s.id}">
+                    <div class="row"><input id="en-${s.id}" value="${s.name}" placeholder="Name"><input id="ee-${s.id}" value="${s.email}" placeholder="Email"></div>
+                    <input id="ec-${s.id}" value="${s.course}" placeholder="Course" class="mb">
+                    <div class="edit-actions"><button class="btn-save" onclick="saveEdit('${s.id}')">Save</button><button class="btn-cancel" onclick="cancelEdit('${s.id}')">Cancel</button></div>
+                </div>`;
+            document.getElementById("list").appendChild(li);
+        }
+
         async function loadStudents() {
-            const { data } = await client.from("students").select("*");
-            const list = document.getElementById("list");
-            list.innerHTML = "";
-            data.forEach(s => {
-                const li = document.createElement("li");
-                li.innerHTML = `<b>${s.name}</b> (${s.email}) - ${s.course}
-                    <button class="edit-btn" onclick="updateStudent(${s.id}, '${s.name}', '${s.email}', '${s.course}')">Edit</button>
-                    <button class="del-btn" onclick="deleteStudent(${s.id})">Delete</button>`;
-                list.appendChild(li);
-            });
+            const from = currentPage * PAGE_SIZE;
+            const to = from + PAGE_SIZE - 1;
+
+            const { data, count } = await client
+                .from("students")
+                .select("*", { count: "exact" })
+                .order("id", { ascending: true })
+                .range(from, to);
+
+            document.getElementById("list").innerHTML = "";
+
+            if (!data || data.length === 0) {
+                document.getElementById("empty").style.display = "block";
+                document.getElementById("pagination").style.display = "none";
+                updateCount(0);
+                return;
+            }
+
+            document.getElementById("empty").style.display = "none";
+            document.getElementById("pagination").style.display = count > PAGE_SIZE ? "flex" : "none";
+
+            document.getElementById("btn-prev").disabled = currentPage === 0;
+            document.getElementById("btn-next").disabled = to >= count - 1;
+            document.getElementById("page-info").textContent = `Page ${currentPage + 1}`;
+
+            data.forEach((s, i) => appendRow(s, from + i + 1));
+            updateCount(count);
         }
+
         loadStudents();
     </script>
 </body>
