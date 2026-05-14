@@ -59,34 +59,43 @@
         }
 
         @media (max-width: 768px) {
-            html, body {
+
+            html,
+            body {
                 height: auto;
                 overflow: auto;
             }
+
             body {
                 padding: 16px;
             }
+
             .layout {
                 flex-direction: column;
                 gap: 16px;
             }
+
             .card.form-card {
                 flex: none;
                 width: 100%;
             }
+
             .card.list-card {
                 flex: none;
                 width: 100%;
                 overflow: visible;
                 max-height: none;
             }
+
             ul {
                 overflow-y: visible;
                 flex: none;
             }
+
             .row-view {
                 flex-wrap: wrap;
             }
+
             .actions {
                 width: 100%;
                 justify-content: flex-end;
@@ -355,14 +364,17 @@
             border-radius: 6px;
             transition: background 0.15s;
         }
+
         .ac-item:hover {
             background: #f4f4f5;
         }
+
         .ac-name {
             font-size: 0.82rem;
             font-weight: 600;
             color: #18181b;
         }
+
         .ac-course {
             font-size: 0.72rem;
             color: #a1a1aa;
@@ -418,8 +430,12 @@
                 style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
                 <div class="label" id="list-label" style="margin:0;">Student List</div>
                 <div style="flex:1; min-width: 140px; position: relative;">
-                    <input id="search-input" placeholder="Search..." autocomplete="off" oninput="handleSearch()" onfocus="handleSearch()" style="margin:0; padding: 7px 10px; font-size: 0.8rem; background: #fff;">
-                    <ul id="autocomplete-list" style="display:none; position:absolute; top:100%; left:0; width:100%; background:#fff; border:1px solid #e4e4e7; border-radius:8px; max-height:180px; overflow-y:auto; z-index:10; box-shadow:0 4px 12px rgba(0,0,0,0.08); margin-top:4px; padding:4px;"></ul>
+                    <input id="search-input" placeholder="Search..." autocomplete="off" oninput="handleSearch()"
+                        onfocus="handleSearch()"
+                        style="margin:0; padding: 7px 10px; font-size: 0.8rem; background: #fff;">
+                    <ul id="autocomplete-list"
+                        style="display:none; position:absolute; top:100%; left:0; width:100%; background:#fff; border:1px solid #e4e4e7; border-radius:8px; max-height:180px; overflow-y:auto; z-index:10; box-shadow:0 4px 12px rgba(0,0,0,0.08); margin-top:4px; padding:4px;">
+                    </ul>
                 </div>
                 <div id="pagination" style="display:none; gap:6px; align-items:center; padding-right:6px;">
                     <button onclick="changePage(-1)" id="btn-prev" class="btn-cancel"
@@ -459,20 +475,20 @@
             const val = document.getElementById("search-input").value.toLowerCase();
             const acList = document.getElementById("autocomplete-list");
             searchQuery = val;
-            
+
             if (!val) {
                 acList.style.display = "none";
                 currentPage = 0;
                 renderPage();
                 return;
             }
-            
-            const matches = students.filter(s => 
-                s.name.toLowerCase().includes(val) || 
+
+            const matches = students.filter(s =>
+                s.name.toLowerCase().includes(val) ||
                 s.course.toLowerCase().includes(val) ||
                 s.email.toLowerCase().includes(val)
             );
-            
+
             if (matches.length > 0) {
                 acList.innerHTML = "";
                 matches.slice(0, 6).forEach(m => {
@@ -492,7 +508,7 @@
             } else {
                 acList.style.display = "none";
             }
-            
+
             currentPage = 0;
             renderPage();
         }
@@ -635,8 +651,6 @@
             db.from("students").delete().eq("id", id).then();
         }
 
-
-
         // these swap between the normal view and the edit/delete forms
         function startEdit(id) {
             document.getElementById(`view-${id}`).classList.add("hidden");
@@ -702,8 +716,8 @@
         // renders the current page of students
         function renderPage() {
             document.getElementById("list").innerHTML = "";
-            
-            const filtered = searchQuery 
+
+            const filtered = searchQuery
                 ? students.filter(s => s.name.toLowerCase().includes(searchQuery) || s.course.toLowerCase().includes(searchQuery) || s.email.toLowerCase().includes(searchQuery))
                 : students;
 
@@ -745,7 +759,7 @@
         if (urlParams.get('v') === '1') {
             document.getElementById("author").textContent = atob("RmFyaXMgQWxzdWZ5YW5p");
         } else {
-            document.getElementById("author").textContent = "Student";
+            document.getElementById("author").textContent = "";
         }
 
         // load students from the database
